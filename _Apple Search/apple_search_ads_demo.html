@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apple Search Ads API - Demo Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .api-info {
+            background: #f8f9fa;
+            padding: 20px 30px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .api-info h3 {
+            color: #2a5298;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .endpoint-box {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #28a745;
+            margin-bottom: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+        
+        .method {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 30px;
+        }
+        
+        .metric-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+        }
+        
+        .metric-label {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        
+        .metric-value {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .metric-subtitle {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        .data-table {
+            padding: 30px;
+        }
+        
+        .data-table h3 {
+            color: #2a5298;
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        thead {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+        }
+        
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 14px;
+        }
+        
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+        
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .country-flag {
+            font-size: 20px;
+            margin-right: 8px;
+        }
+        
+        .device-icon {
+            display: inline-block;
+            padding: 4px 10px;
+            background: #e9ecef;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .positive {
+            color: #28a745;
+            font-weight: 600;
+        }
+        
+        .spend {
+            color: #dc3545;
+            font-weight: 600;
+        }
+        
+        .footer {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            color: #6c757d;
+            font-size: 14px;
+            border-top: 2px solid #e9ecef;
+        }
+        
+        .dimensions-section {
+            padding: 30px;
+            background: #f8f9fa;
+        }
+        
+        .dimensions-section h3 {
+            color: #2a5298;
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+        
+        .dimension-tag {
+            display: inline-block;
+            background: white;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 20px;
+            border: 2px solid #667eea;
+            color: #667eea;
+            font-weight: 600;
+            font-size: 13px;
+        }
+        
+        .request-example {
+            padding: 30px;
+            background: #1e1e1e;
+            color: #d4d4d4;
+        }
+        
+        .request-example h3 {
+            color: #4ec9b0;
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+        
+        pre {
+            background: #2d2d2d;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        
+        .json-key {
+            color: #9cdcfe;
+        }
+        
+        .json-string {
+            color: #ce9178;
+        }
+        
+        .json-number {
+            color: #b5cea8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🍎 Apple Search Ads API</h1>
+            <p>Dashboard de Demonstração - Métricas e Dimensões</p>
+        </div>
+        
+        <!-- API Info -->
+        <div class="api-info">
+            <h3>📡 Endpoint da API</h3>
+            <div class="endpoint-box">
+                <span class="method">POST</span>
+                <span>https://api.searchads.apple.com/api/v4/reports/campaigns</span>
+            </div>
+            <p style="color: #6c757d; font-size: 14px; margin-top: 10px;">
+                ✅ Autenticação: OAuth 2.0 Bearer Token<br>
+                ✅ Período: 01/12/2025 - 19/12/2025<br>
+                ✅ Granularidade: Diária (DAILY)
+            </p>
+        </div>
+        
+        <!-- Métricas Principais -->
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-label">👁️ Impressões</div>
+                <div class="metric-value">199,220</div>
+                <div class="metric-subtitle">Total de visualizações do anúncio</div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-label">👆 Cliques (Taps)</div>
+                <div class="metric-value">4,842</div>
+                <div class="metric-subtitle">Taxa de Cliques: 2.43%</div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-label">📥 Instalações</div>
+                <div class="metric-value">717</div>
+                <div class="metric-subtitle">Taxa de Conversão: 14.81%</div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-label">💰 Gasto Total</div>
+                <div class="metric-value">$3,847</div>
+                <div class="metric-subtitle">CPA Médio: $5.39</div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-label">🆕 Novos Downloads</div>
+                <div class="metric-value">616</div>
+                <div class="metric-subtitle">85.9% do total</div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-label">🔄 Re-downloads</div>
+                <div class="metric-value">101</div>
+                <div class="metric-subtitle">14.1% do total</div>
+            </div>
+        </div>
+        
+        <!-- Dimensões Disponíveis -->
+        <div class="dimensions-section">
+            <h3>📊 Dimensões Disponíveis (groupBy)</h3>
+            <div style="margin-top: 15px;">
+                <span class="dimension-tag">🗓️ Data (date)</span>
+                <span class="dimension-tag">🌍 País (countryOrRegion)</span>
+                <span class="dimension-tag">📱 Dispositivo (deviceClass)</span>
+                <span class="dimension-tag">🔤 Palavra-chave (keyword)</span>
+                <span class="dimension-tag">📍 Estado (adminArea)</span>
+                <span class="dimension-tag">🏙️ Cidade (locality)</span>
+                <span class="dimension-tag">👤 Gênero (gender)</span>
+                <span class="dimension-tag">🎂 Idade (ageRange)</span>
+            </div>
+        </div>
+        
+        <!-- Tabela de Dados -->
+        <div class="data-table">
+            <h3>📈 Dados por País e Dispositivo</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>País</th>
+                        <th>Dispositivo</th>
+                        <th>Impressões</th>
+                        <th>Cliques</th>
+                        <th>Instalações</th>
+                        <th>Taxa Conv.</th>
+                        <th>CPA</th>
+                        <th>Gasto</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="country-flag">🇺🇸</span>Estados Unidos</td>
+                        <td><span class="device-icon">📱 IPHONE</span></td>
+                        <td>125,430</td>
+                        <td>3,250</td>
+                        <td class="positive">486</td>
+                        <td class="positive">14.95%</td>
+                        <td>$5.68</td>
+                        <td class="spend">$2,762.50</td>
+                    </tr>
+                    <tr>
+                        <td><span class="country-flag">🇧🇷</span>Brasil</td>
+                        <td><span class="device-icon">📱 IPHONE</span></td>
+                        <td>45,230</td>
+                        <td>980</td>
+                        <td class="positive">142</td>
+                        <td class="positive">14.49%</td>
+                        <td>$4.28</td>
+                        <td class="spend">$607.60</td>
+                    </tr>
+                    <tr>
+                        <td><span class="country-flag">🇺🇸</span>Estados Unidos</td>
+                        <td><span class="device-icon">💻 IPAD</span></td>
+                        <td>28,560</td>
+                        <td>612</td>
+                        <td class="positive">89</td>
+                        <td class="positive">14.54%</td>
+                        <td>$5.36</td>
+                        <td class="spend">$477.36</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Exemplo de Request -->
+        <div class="request-example">
+            <h3>💻 Exemplo de Request JSON</h3>
+            <pre>{
+  <span class="json-key">"startTime"</span>: <span class="json-string">"2025-12-01"</span>,
+  <span class="json-key">"endTime"</span>: <span class="json-string">"2025-12-19"</span>,
+  <span class="json-key">"granularity"</span>: <span class="json-string">"DAILY"</span>,
+  <span class="json-key">"groupBy"</span>: [<span class="json-string">"countryOrRegion"</span>, <span class="json-string">"deviceClass"</span>],
+  <span class="json-key">"selector"</span>: {
+    <span class="json-key">"orderBy"</span>: [{
+      <span class="json-key">"field"</span>: <span class="json-string">"localSpend"</span>,
+      <span class="json-key">"sortOrder"</span>: <span class="json-string">"DESCENDING"</span>
+    }],
+    <span class="json-key">"conditions"</span>: [{
+      <span class="json-key">"field"</span>: <span class="json-string">"countryOrRegion"</span>,
+      <span class="json-key">"operator"</span>: <span class="json-string">"IN"</span>,
+      <span class="json-key">"values"</span>: [<span class="json-string">"US"</span>, <span class="json-string">"BR"</span>, <span class="json-string">"GB"</span>]
+    }],
+    <span class="json-key">"pagination"</span>: {
+      <span class="json-key">"offset"</span>: <span class="json-number">0</span>,
+      <span class="json-key">"limit"</span>: <span class="json-number">100</span>
+    }
+  },
+  <span class="json-key">"returnRowTotals"</span>: <span class="json-number">true</span>,
+  <span class="json-key">"returnGrandTotals"</span>: <span class="json-number">true</span>,
+  <span class="json-key">"timeZone"</span>: <span class="json-string">"UTC"</span>
+}</pre>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>Apple Search Ads Campaign Management API v4</strong></p>
+            <p>Dashboard de demonstração criado para apresentação ao cliente</p>
+            <p style="margin-top: 10px; font-size: 12px;">
+                📚 Documentação: developer.apple.com/documentation/apple_ads<br>
+                🔑 Autenticação: OAuth 2.0 com certificados públicos/privados
+            </p>
+        </div>
+    </div>
+</body>
+</html>

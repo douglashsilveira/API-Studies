@@ -49,22 +49,6 @@ Fluxos comuns, chamadas típicas, paginação, versionamento e boas práticas.
 Observações práticas
 Limitações, armadilhas, comportamentos não óbvios e aprendizados adquiridos durante o estudo.
 
-🗂 Estrutura do repositório (exemplo)
-/
-├── api-name-1/
-│   ├── README.md
-│   ├── auth.md
-│   ├── entities.md
-│   ├── metrics_dimensions.md
-│   └── notes.md
-│
-├── api-name-2/
-│   ├── README.md
-│   └── ...
-│
-└── README.md
-
-
 A estrutura pode evoluir conforme novas APIs e padrões forem surgindo.
 
 🧩 Público-alvo
